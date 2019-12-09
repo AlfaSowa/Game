@@ -1,37 +1,20 @@
-import ctx from './canvas'
+import options from './options.js'
 
-//создаем базовую модель башни
-class Tower {
-    constructor(name, damage, attackspeed, ...debufs) {
-        this.name = name,
-        this.damage = damage,
-        this.attackspeed = attackspeed,
-        this.debuffs = [...debufs]
-    }
-
-    getDebuffs() {
-        console.log(`${this.name} использует дебафф${this.debuffs.length > 1 ? 'ы' : ''} ${[...this.debuffs]}`)
-    }
+//создаем юнитов
+let towers = {
+    list: [],
+    create: function(x,y,r,color){
+        let tower ={
+            x: x,
+            y: y,
+            r: r,
+            color: color,
+            draw: function(){
+                options.drawUnits(this.x, this.y, this.r, this.color)
+            }
+        }
+        this.list.push(tower)
+        return tower
+    },
 }
-
-
-//рисуем башню
-function drawTower() {
-    ctx.beginPath()
-    ctx.fillStyle = "green"
-    ctx.arc(350, 350, 25, 0, 2 * Math.PI)
-    ctx.fill()
-}
-
-drawTower()
-
-//создание башен
-let towers = [
-    new Tower('SlowTower', 35, 100, ['МАЗАФАКАЩИТ', 'ПЕРДУЛИО'])
-]
 export default towers
-
-
-
-
-

@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 6);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -154,7 +154,7 @@ var singleton = null;
 var	singletonCounter = 0;
 var	stylesInsertedAtTop = [];
 
-var	fixUrls = __webpack_require__(4);
+var	fixUrls = __webpack_require__(3);
 
 module.exports = function(list, options) {
 	if (typeof DEBUG !== "undefined" && DEBUG) {
@@ -490,28 +490,10 @@ function updateLink (link, options, obj) {
 
 /***/ }),
 /* 1 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var normalize_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
-/* harmony import */ var normalize_css__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(normalize_css__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _sass_style_sass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5);
-/* harmony import */ var _sass_style_sass__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_sass_style_sass__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _js_main__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(7);
-/* harmony import */ var _js_main__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_js_main__WEBPACK_IMPORTED_MODULE_2__);
-//sass
-
- //js
-
-
-
-/***/ }),
-/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-var content = __webpack_require__(3);
+var content = __webpack_require__(2);
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -532,13 +514,13 @@ if(content.locals) module.exports = content.locals;
 if(false) {}
 
 /***/ }),
-/* 3 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
 
 /***/ }),
-/* 4 */
+/* 3 */
 /***/ (function(module, exports) {
 
 /**
@@ -627,11 +609,11 @@ module.exports = function (css) {
 };
 
 /***/ }),
-/* 5 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-var content = __webpack_require__(6);
+var content = __webpack_require__(5);
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -652,44 +634,26 @@ if(content.locals) module.exports = content.locals;
 if(false) {}
 
 /***/ }),
-/* 6 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
 
 /***/ }),
-/* 7 */
-/***/ (function(module, exports) {
+/* 6 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-var game = {
-  canvas: false,
-  ctx: false,
-  init: function init() {
-    this.canvas = document.getElementById('canvas');
-    this.ctx = this.canvas.getContext('2d');
-    game.enemies.create(10);
-    game.towers.create(350, 350);
-    setInterval(game.update, 1000 / 30);
-    window.requestAnimationFrame(game.draw);
-  },
-  update: function update() {
-    game.mapEntitles.update();
-  },
-  draw: function draw() {
-    game.ctx.clearRect(0, 0, game.canvas.width, game.canvas.height);
-    game.map.draw();
-    game.mapEntitles.draw();
-    window.requestAnimationFrame(game.draw);
-  },
-  drawUnits: function drawUnits(x, y, r, color) {
-    game.ctx.beginPath();
-    game.ctx.arc(x, y, r, 0, 2 * Math.PI);
-    game.ctx.fillStyle = color;
-    game.ctx.fill();
-  }
-}; //создаем карту
+"use strict";
+__webpack_require__.r(__webpack_exports__);
 
-game.map = {
+// EXTERNAL MODULE: ./node_modules/normalize.css/normalize.css
+var normalize = __webpack_require__(1);
+
+// EXTERNAL MODULE: ./static/sass/style.sass
+var style = __webpack_require__(4);
+
+// CONCATENATED MODULE: ./static/js/options.js
+var options = {
   waypoints: [{
     x: 100,
     y: 0
@@ -717,139 +681,228 @@ game.map = {
   }, {
     x: 250,
     y: 500
-  }],
-  draw: function draw() {
-    game.ctx.fillStyle = '#fff';
-    game.ctx.fillRect(0, 0, game.canvas.width, game.canvas.height);
-    game.ctx.save();
-    game.ctx.beginPath();
-    game.ctx.strokeStyle = 'rgb(170, 170, 170)';
-    game.ctx.lineWidth = 60;
-    game.ctx.moveTo(game.map.waypoints[0].x, game.map.waypoints[0].y);
+  }]
+};
+/* harmony default export */ var js_options = (options);
+// CONCATENATED MODULE: ./static/js/creep.js
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-    for (var i = 1; i < game.map.waypoints.length; i++) {
-      game.ctx.lineTo(game.map.waypoints[i].x, game.map.waypoints[i].y);
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+ //создаем юнита
+
+var creep_Creep = function Creep(opt) {
+  var _this = this;
+
+  _classCallCheck(this, Creep);
+
+  _defineProperty(this, "draw", function () {
+    _this.ctx.save();
+
+    _this.ctx.beginPath();
+
+    _this.ctx.arc(_this.x, _this.y, _this.radius, 0, 2 * Math.PI);
+
+    _this.ctx.fillStyle = _this.color;
+
+    _this.ctx.fill();
+
+    _this.ctx.restore();
+  });
+
+  _defineProperty(this, "step", function () {
+    //останавливаем enemy
+    if (!_this.waypoints[_this.index]) {
+      console.log('stop');
+      return false;
     }
 
-    game.ctx.stroke();
-    game.ctx.restore();
-  }
-}; //создаем товера
+    if (_this.nextWp()) {
+      _this.index++;
+      _this.Wp = {
+        x: _this.waypoints[_this.index].x,
+        y: _this.waypoints[_this.index].y
+      };
+    } else {
+      _this.nextWp();
+    }
 
-game.towers = {
-  create: function create(x, y) {
-    var entity = game.mapEntitles.create(x, y, 25, 'green');
-    entity.type = 'tower';
+    return true;
+  });
 
-    entity.update = function () {};
+  _defineProperty(this, "nextWp", function () {
+    var distX = _this.Wp.x - _this.x;
+    var distY = _this.Wp.y - _this.y;
+    var angle = Math.atan2(distY, distX);
+    _this.x += _this.speed * Math.cos(angle);
+    _this.y += _this.speed * Math.sin(angle);
+    return (distX < 0 ? -distX : distX) + (distY < 0 ? -distY : distY) < 2;
+  });
 
-    return entity;
-  }
-}; //создаем юнитов
+  this.waypoints = js_options.waypoints;
+  this.ctx = opt.ctx;
+  this.x = opt.x;
+  this.y = opt.y;
+  this.radius = opt.radius;
+  this.color = opt.color;
+  this.speed = opt.speed / 5;
+  this.Wp = {
+    x: this.waypoints[0].x,
+    y: this.waypoints[0].y
+  };
+  this.index = 0;
+};
 
-game.enemies = {
-  create: function create(level) {
-    var entity = game.mapEntitles.create(0, 0, level, 'red');
-    entity.type = 'enemy';
-    entity.speed = 5;
-    entity.level = level;
-    entity.velocity = {
-      x: entity.speed,
-      y: entity.speed
-    };
-    entity.waypoint = false;
-    entity.waypointIndex = 0;
 
-    entity.update = function () {
-      if (this.waypointReached()) {
-        if (!this.nextWaypoint()) {
-          return this.exit();
-        }
-      } else {
-        this.x += entity.velocity.x;
-        this.y += entity.velocity.y;
-      }
-    };
+// CONCATENATED MODULE: ./static/js/towers.js
+ //создаем юнитов
 
-    entity.waypointReached = function () {
-      return this.velocity.x > 0 && this.x >= this.waypoint.x || this.velocity.x < 0 && this.x <= this.waypoint.x || this.velocity.y > 0 && this.y >= this.waypoint.y || this.velocity.y < 0 && this.y <= this.waypoint.y;
-    };
-
-    entity.nextWaypoint = function () {
-      if (!this.waypoint.x) {
-        this.waypoint = Object.assign({}, game.map.waypoints[entity.waypointIndex]);
-        this.x = this.waypoint.x;
-        this.y = this.waypoint.y;
-      }
-
-      var oldX = this.waypoint.x;
-      var oldY = this.waypoint.y;
-      this.waypointIndex++;
-
-      if (!game.map.waypoints[this.waypointIndex]) {
-        return false;
-      }
-
-      this.waypoint = Object.assign({}, game.map.waypoints[this.waypointIndex]);
-
-      if (oldX == this.waypoint.x) {
-        this.velocity.x = 0;
-      } else {
-        this.velocity.x = this.x < this.waypoint.x ? entity.speed : -entity.speed;
-      }
-
-      if (oldY == this.waypoint.y) {
-        this.velocity.y = 0;
-      } else {
-        this.velocity.y = this.y < this.waypoint.y ? entity.speed : -entity.speed;
-      }
-
-      return true;
-    };
-
-    entity.exit = function () {
-      console.log('ты проиграл неудачник!!!');
-    };
-
-    entity.nextWaypoint();
-    return entity;
-  }
-}; //модель создания юнитов
-
-game.mapEntitles = {
-  list: {},
-  idCounter: 0,
-  init: function init() {},
+var towers = {
+  list: [],
   create: function create(x, y, r, color) {
-    var entity = {
-      id: ++this.idCounter,
+    var tower = {
       x: x,
       y: y,
       r: r,
       color: color,
-      update: function update() {
-        this.x++;
-        this.y++;
-      },
       draw: function draw() {
-        game.drawUnits(this.x, this.y, this.r, this.color);
+        js_options.drawUnits(this.x, this.y, this.r, this.color);
       }
     };
-    this.list[entity.id] = entity;
-    return entity;
-  },
-  update: function update() {
-    for (var i in this.list) {
-      this.list[i].update();
-    }
-  },
-  draw: function draw() {
-    for (var i in this.list) {
-      this.list[i].draw();
-    }
+    this.list.push(tower);
+    return tower;
   }
 };
-window.onload = game.init();
+/* harmony default export */ var js_towers = (towers);
+// CONCATENATED MODULE: ./static/js/map.js
+function map_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function map_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+ //создаем карту
+
+var map_Map = function Map(opt) {
+  var _this = this;
+
+  map_classCallCheck(this, Map);
+
+  map_defineProperty(this, "draw", function () {
+    _this.ctx.save();
+
+    _this.ctx.fillStyle = _this.color;
+
+    _this.ctx.fill(); //очищаем canvas
+
+
+    _this.ctx.fillRect(0, 0, _this.width, _this.height); //отрисовываем canvas
+
+
+    _this.ctx.strokeStyle = 'rgb(170, 170, 170)';
+    _this.ctx.lineWidth = 50; //отрисовываем путь
+
+    _this.path();
+
+    _this.ctx.restore();
+  });
+
+  map_defineProperty(this, "path", function () {
+    _this.ctx.beginPath();
+
+    _this.ctx.moveTo(_this.waypoints[0].x, _this.waypoints[0].y);
+
+    for (var i = 1; i < _this.waypoints.length; i++) {
+      _this.ctx.lineTo(_this.waypoints[i].x, _this.waypoints[i].y);
+    }
+
+    _this.ctx.stroke();
+  });
+
+  this.waypoints = js_options.waypoints;
+  this.ctx = opt.ctx;
+  this.width = opt.width;
+  this.height = opt.height;
+  this.color = opt.color;
+};
+
+
+// CONCATENATED MODULE: ./static/js/main.js
+function main_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function main_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
+
+
+
+var WIDTH = 700;
+var HEIGHT = 700;
+var canvas = document.getElementById('canvas');
+var ctx = canvas.getContext('2d');
+
+var main_Game = function Game() {
+  var _this = this;
+
+  main_classCallCheck(this, Game);
+
+  main_defineProperty(this, "init", function () {
+    //инциализируем объекты
+    //карта
+    _this.map = new map_Map({
+      ctx: ctx,
+      width: WIDTH,
+      height: HEIGHT,
+      color: '#fff'
+    }); //враги
+
+    var creep = new creep_Creep({
+      ctx: ctx,
+      x: 100,
+      y: 0,
+      color: 'red',
+      radius: 15,
+      speed: 10
+    });
+
+    _this.enemies.push(creep); //отрисовываем объекты
+
+
+    _this.map.draw();
+
+    _this.enemies.forEach(function (creep) {
+      creep.draw();
+    });
+
+    requestAnimationFrame(_this.draw);
+  });
+
+  main_defineProperty(this, "draw", function () {
+    //обновляем объекты
+    //карта
+    _this.map.draw(); //враги
+
+
+    _this.enemies.forEach(function (creep) {
+      //движение врагов
+      creep.step();
+      creep.draw();
+    });
+
+    requestAnimationFrame(_this.draw);
+  });
+
+  canvas.width = WIDTH;
+  canvas.height = HEIGHT;
+  this.enemies = [];
+  this.map = false;
+};
+
+window.onload = new main_Game().init();
+// CONCATENATED MODULE: ./static/index.js
+//sass
+
+ //js
+
+
 
 /***/ })
 /******/ ]);
