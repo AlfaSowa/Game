@@ -175,6 +175,7 @@ export class Hero {
     init = () => {
         window.addEventListener("mousedown", this.getTarget);
         window.addEventListener("keydown", this.useSpell);
+        console.log("init");
     };
 
     testCircle = () => {
