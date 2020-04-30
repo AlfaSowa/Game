@@ -59,6 +59,7 @@ btnStart.addEventListener("click", () => {
         game.start = true;
     }
 });
+
 optionsShow.addEventListener("click", () => {
     options.classList.toggle("options--hide");
 });
