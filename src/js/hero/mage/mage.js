@@ -1,10 +1,12 @@
 import { Hero } from "../hero";
-import { Bullet } from "./spells";
+import { Bullet, GhostBullet } from "./spells";
 import { config } from "../../config";
 
 const configHero = {
     mainColor: "#f72743",
 };
+
+const random = (min, max) => Math.random() * (max - min) + min;
 
 export class Mage extends Hero {
     color = configHero.mainColor;
@@ -17,6 +19,10 @@ export class Mage extends Hero {
 
     useBlast = false;
     blastRadius = this.radius + 6;
+
+    ghostBullets = [];
+
+    radiusFromCenterHero = this.radius + 100;
 
     constructor(opt) {
         super(opt);
@@ -55,6 +61,7 @@ export class Mage extends Hero {
         if (this.gunReady && this.coord.x !== this.mouse.x) {
             this.bulletsCount -= 1;
             this.bullets.push(new Bullet(this.coord, this.mouse, this.ctx));
+            this.ghostBullets.pop();
 
             if (this.bulletsCount === 0) {
                 this.gunReady = false;
@@ -62,13 +69,45 @@ export class Mage extends Hero {
         }
     };
 
-    //сделать рефакторинг
+    ghostBulletRide = (x, y, finalX, finalY, i) => {
+        let delta = { x: finalX - x, y: finalY - y };
+        let dist = Math.sqrt(delta.x * delta.x + delta.y * delta.y);
+
+        if (dist <= 10) {
+            this.createReloadClip(finalX, finalY, "#f1f1f1");
+        } else {
+            this.createReloadClip(x, y, "#f1f1f1");
+
+            this.ghostBullets[i].x += (10 * delta.x) / dist;
+            this.ghostBullets[i].y += (10 * delta.y) / dist;
+        }
+    };
+
+    createBullet = (i) => {
+        let angleX = Math.cos((i + 1) * (config.TWO_PI / this.bulletsCountMax));
+        let angleY = Math.sin((i + 1) * (config.TWO_PI / this.bulletsCountMax));
+        let finalX = this.coord.x + (this.radius + 20) * angleX;
+        let finalY = this.coord.y + (this.radius + 20) * angleY;
+
+        let x, y;
+
+        if (this.ghostBullets[i].x === 0 && this.ghostBullets[i].y === 0) {
+            this.createReloadClip(finalX, finalY, "#f1f1f1");
+        } else {
+            x = this.coord.x + this.radiusFromCenterHero * angleX + this.ghostBullets[i].x;
+            y = this.coord.y + this.radiusFromCenterHero * angleY + this.ghostBullets[i].y;
+
+            this.ghostBulletRide(x, y, finalX, finalY, i);
+        }
+    };
+
     gunMechanic = () => {
         if (!this.gunReady) {
             this.speedReload += 5;
             if (this.speedReload === 50) {
                 this.bulletsCount += 1;
                 this.speedReload = 0;
+                this.ghostBullets.push({ x: random(-20, 20), y: random(-20, 20) });
             }
 
             if (this.bulletsCount === this.bulletsCountMax) {
@@ -76,11 +115,8 @@ export class Mage extends Hero {
             }
         }
 
-        for (let i = 0; i < this.bulletsCount; i++) {
-            let x = (this.radius + 20) * Math.cos((i + 1) * (config.TWO_PI / this.bulletsCountMax));
-            let y = (this.radius + 20) * Math.sin((i + 1) * (config.TWO_PI / this.bulletsCountMax));
-
-            this.createReloadClip(this.coord.x + x, this.coord.y - y, "#f1f1f1");
+        for (let i = 0; i < this.ghostBullets.length; i++) {
+            this.createBullet(i);
         }
     };
 
@@ -97,6 +133,13 @@ export class Mage extends Hero {
 
     init() {
         super.init();
+        for (let i = 0; i < this.bulletsCountMax; i++) {
+            this.ghostBullets.push({ x: 0, y: 0 });
+        }
+        for (let i = 0; i < this.ghostBullets.length; i++) {
+            this.createBullet(i);
+        }
+
         window.addEventListener("keydown", this.useSpell);
     }
 
@@ -112,6 +155,7 @@ export class Mage extends Hero {
                     this.bullets = this.bullets.filter((item) => !item.finish);
                 }
             });
+
             this.blast();
         }
     }
