@@ -9,9 +9,6 @@ const configHero = {
 export class Mage extends Hero {
     color = configHero.mainColor;
     vel = 5;
-    maxHp = 400;
-    curHp = 200;
-
     bullets = [];
     bulletsCountMax = 10;
     bulletsCount = this.bulletsCountMax;
@@ -47,14 +44,6 @@ export class Mage extends Hero {
     };
 
     createReloadClip = (x, y, color) => {
-        // this.ctx.beginPath();
-        // this.ctx.strokeStyle = color;
-        // this.ctx.lineWidth = 6;
-        // this.ctx.moveTo(this.coord.x, this.coord.y);
-        // this.ctx.lineTo(x, y);
-        // this.ctx.stroke();
-        // this.ctx.closePath();
-
         this.ctx.fillStyle = color;
         this.ctx.beginPath();
         this.ctx.arc(x, y, 5, 0, config.TWO_PI);
@@ -113,14 +102,17 @@ export class Mage extends Hero {
 
     draw() {
         super.draw();
-        this.gunMechanic();
 
-        this.bullets.forEach((bullet) => {
-            bullet.draw();
-            if (bullet.finish) {
-                this.bullets = this.bullets.filter((item) => !item.finish);
-            }
-        });
-        this.blast();
+        if (this.curHp > 0) {
+            this.gunMechanic();
+
+            this.bullets.forEach((bullet) => {
+                bullet.draw();
+                if (bullet.finish) {
+                    this.bullets = this.bullets.filter((item) => !item.finish);
+                }
+            });
+            this.blast();
+        }
     }
 }

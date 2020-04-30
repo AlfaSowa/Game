@@ -14,9 +14,12 @@ export class Hero {
 
     testCircleColor = "red";
 
+    curHp = 400;
+
     constructor(opt) {
         this.ctx = opt.ctx;
         this.mouse = opt.mouse;
+        this.maxHp = 400;
     }
 
     getTarget = () => {
@@ -46,7 +49,7 @@ export class Hero {
         this.ctx.lineJoin = "none";
         this.ctx.lineWidth = this.stroke;
         this.ctx.beginPath();
-        this.ctx.arc(x, y, radius, 0, config.TWO_PI / 3);
+        this.ctx.arc(x, y, radius, 0, (config.TWO_PI / 100) * ((100 / this.maxHp) * this.curHp));
         this.ctx.stroke();
         this.ctx.closePath();
     };
@@ -82,16 +85,27 @@ export class Hero {
 
     testCircle = () => {
         this.createStrokeCircle(700, 500, 20, this.testCircleColor, 2);
+        if (this.coord.x > 700 - 20 && this.coord.x < 700 + 20 && this.coord.y > 500 - 20 && this.coord.y < 500 + 20) {
+            this.curHp -= 1;
+        }
+    };
+
+    isDeath = () => {
+        console.log(1);
     };
 
     draw() {
+        if (this.curHp > 0) {
+            this.toMouseCoordMove();
+
+            this.createCircle(this.coord.x, this.coord.y, this.radius, this.color);
+            this.createStrokeCircle(this.coord.x, this.coord.y, this.radius, "#404040", this.radius / 3);
+            this.createCurHp(this.coord.x, this.coord.y, this.radius, this.curHp);
+        } else {
+            this.isDeath();
+        }
+
         this.getSlow();
-        this.toMouseCoordMove();
-        this.createCircle(this.coord.x, this.coord.y, this.radius, this.color);
-
-        this.createStrokeCircle(this.coord.x, this.coord.y, this.radius, "#404040", this.radius / 3);
-        this.createCurHp(this.coord.x, this.coord.y, this.radius, this.curHp);
-
         this.testCircle();
     }
 }

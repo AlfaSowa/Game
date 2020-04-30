@@ -87,6 +87,7 @@ export class Boss {
     getSlow = (hero) => {
         if (this.checkCoord(hero, this) || this.checkVoid(hero)) {
             hero.slow = true;
+            hero.curHp -= 2;
         } else {
             hero.slow = false;
         }
