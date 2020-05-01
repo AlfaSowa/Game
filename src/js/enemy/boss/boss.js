@@ -2,6 +2,9 @@ import { config } from "../../config";
 import { slow } from "../../spells/slow";
 
 export class Boss {
+    curHp = 400;
+    maxHp = 400;
+
     constructor(opt) {
         this.ctx = opt.ctx;
 
@@ -26,6 +29,26 @@ export class Boss {
         this.ctx.closePath();
         this.ctx.fill();
     }
+
+    createStrokeCircle = (x, y, radius, color, lineWidth) => {
+        this.ctx.beginPath();
+        this.ctx.strokeStyle = color;
+        this.ctx.lineJoin = "none";
+        this.ctx.lineWidth = lineWidth;
+        this.ctx.arc(x, y, radius, 0, config.TWO_PI);
+        this.ctx.stroke();
+        this.ctx.closePath();
+    };
+
+    createCurHp = (x, y, radius) => {
+        this.ctx.strokeStyle = "#e4e4e4";
+        this.ctx.lineJoin = "none";
+        this.ctx.lineWidth = this.stroke;
+        this.ctx.beginPath();
+        this.ctx.arc(x, y, radius, 0, (Math.PI / 100) * ((100 / this.maxHp) * this.curHp));
+        this.ctx.stroke();
+        this.ctx.closePath();
+    };
 
     checkCoord = (hero, add) => {
         let delta = { x: hero.coord.x - add.coord.x, y: hero.coord.y - add.coord.y };
@@ -101,6 +124,9 @@ export class Boss {
 
     draw = (hero) => {
         this.createBoss(hero);
+        this.createCircle(this.coord.x, this.coord.y, this.radius, this.color);
+        this.createStrokeCircle(this.coord.x, this.coord.y, this.radius, "#404040", this.radius / 5);
+        this.createCurHp(this.coord.x, this.coord.y, this.radius, this.curHp);
         // this.drawVoid();
         // this.getSlow(hero);
     };

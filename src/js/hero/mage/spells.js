@@ -8,6 +8,9 @@ export class Bullet {
         this.ctx = ctx;
         this.coord = { x: coord.x, y: coord.y };
         this.mouse = { x: mouse.x, y: mouse.y };
+        this.vel = 10;
+        this.energy = 100;
+        this.collision = false;
     }
 
     damage = (obj) => {
@@ -17,7 +20,38 @@ export class Bullet {
 
             if (dist < object.radius) {
                 object.color = "green";
-                this.finish = true;
+
+                if (object.density) {
+                    switch (object.density) {
+                        case "hight":
+                            this.finish = true;
+
+                            break;
+
+                        case "mid":
+                            this.vel = 4;
+                            this.collision = true;
+                            break;
+
+                        default:
+                            this.finish = true;
+                            break;
+                    }
+                } else {
+                    console.log(object);
+                    if (object.curHp) {
+                        object.curHp -= 20;
+                    }
+                    this.finish = true;
+                }
+            }
+
+            if (this.collision) {
+                if (this.energy > 0) {
+                    this.energy -= 0.15;
+                } else {
+                    this.finish = true;
+                }
             }
         });
     };
@@ -31,13 +65,15 @@ export class Bullet {
 
         if (this.coord.x != this.mouse.x || this.coord.y != this.mouse.y) {
             let delta = { x: this.mouse.x - this.coord.x, y: this.mouse.y - this.coord.y };
-            let dist = Math.sqrt(delta.x * delta.x + delta.y * delta.y);
+            let angle = Math.atan2(delta.y, delta.x);
 
-            if (dist <= 9) {
-                this.finish = true;
+            if (this.coord.x > 0 && this.coord.x < innerWidth && this.coord.y > 0 && this.coord.y < innerHeight) {
+                this.coord.x += Math.cos(angle) * this.vel;
+                this.coord.y += Math.sin(angle) * this.vel;
+                this.mouse.x += Math.cos(angle) * this.vel;
+                this.mouse.y += Math.sin(angle) * this.vel;
             } else {
-                this.coord.x += (9 * delta.x) / dist;
-                this.coord.y += (9 * delta.y) / dist;
+                this.finish = true;
             }
         }
     };

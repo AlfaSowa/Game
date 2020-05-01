@@ -10,6 +10,7 @@ export class Map {
         this.ctx = options.ctx;
         this.mouse = options.mouse;
         this.walls = [];
+        this.puffs = [];
     }
 
     createCircle = (x, y, radius, color) => {
@@ -34,14 +35,18 @@ export class Map {
             radius: 35,
         });
 
-        for (let i = 0; i < 20; i++) {
+        for (let i = 0; i < 5; i++) {
             this.walls.push(new Wall({ ctx: this.ctx, x: random(0, config.canvasWidth), y: random(300, config.canvasHeight) }));
+        }
+
+        for (let i = 0; i < 5; i++) {
+            this.puffs.push(new Puff({ ctx: this.ctx, x: random(0, config.canvasWidth), y: random(300, config.canvasHeight) }));
         }
 
         this.boss.init();
         this.mage.init();
 
-        this.gameObjects = [this.boss, ...this.walls];
+        this.gameObjects = [this.boss, ...this.walls, ...this.puffs];
     };
 
     testCircle = () => {
@@ -52,6 +57,7 @@ export class Map {
         this.boss.draw(this.mage);
         this.mage.draw(this.gameObjects);
         this.walls.map((e) => e.draw());
+        this.puffs.map((e) => e.draw());
     };
 }
 
@@ -62,8 +68,36 @@ class Wall {
             x: opt.x,
             y: opt.y,
         };
-        this.radius = 20;
+        this.radius = 40;
         this.color = "red";
+        //плотность
+        this.density = "hight";
+    }
+
+    createCircle = (x, y, radius, color) => {
+        this.ctx.fillStyle = color;
+        this.ctx.beginPath();
+        this.ctx.arc(x, y, radius, 0, config.TWO_PI);
+        this.ctx.closePath();
+        this.ctx.fill();
+    };
+
+    draw() {
+        this.createCircle(this.coord.x, this.coord.y, this.radius, this.color);
+    }
+}
+
+class Puff {
+    constructor(opt) {
+        this.ctx = opt.ctx;
+        this.coord = {
+            x: opt.x,
+            y: opt.y,
+        };
+        this.radius = 20;
+        this.color = "blue";
+        //плотность
+        this.density = "mid";
     }
 
     createCircle = (x, y, radius, color) => {
