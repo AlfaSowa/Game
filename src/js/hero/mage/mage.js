@@ -74,7 +74,7 @@ export class Mage extends Hero {
         let dist = Math.sqrt(delta.x * delta.x + delta.y * delta.y);
 
         if (dist <= 10) {
-            this.createReloadClip(finalX, finalY, "#f1f1f1");
+            this.createReloadClip(finalX, finalY, "green");
         } else {
             this.createReloadClip(x, y, "#f1f1f1");
 
@@ -84,21 +84,32 @@ export class Mage extends Hero {
     };
 
     createBullet = (i) => {
-        let angleX = Math.cos((i + 1) * (config.TWO_PI / this.bulletsCountMax));
-        let angleY = Math.sin((i + 1) * (config.TWO_PI / this.bulletsCountMax));
+        let angleX = Math.cos(i * (Math.PI / this.bulletsCountMax) + 0.15);
+        let angleY = Math.sin(i * (Math.PI / this.bulletsCountMax) + 0.15);
+
         let finalX = this.coord.x + (this.radius + 20) * angleX;
         let finalY = this.coord.y + (this.radius + 20) * angleY;
 
         let x, y;
 
         if (this.ghostBullets[i].x === 0 && this.ghostBullets[i].y === 0) {
-            this.createReloadClip(finalX, finalY, "#f1f1f1");
+            this.createReloadClip(finalX, finalY, "green");
         } else {
             x = this.coord.x + this.radiusFromCenterHero * angleX + this.ghostBullets[i].x;
             y = this.coord.y + this.radiusFromCenterHero * angleY + this.ghostBullets[i].y;
 
             this.ghostBulletRide(x, y, finalX, finalY, i);
         }
+    };
+
+    createUlty = (i) => {
+        let angleX = Math.cos(i * (-Math.PI / 10) - 0.15);
+        let angleY = Math.sin(i * (-Math.PI / 10) - 0.15);
+
+        let finalX = this.coord.x + (this.radius + 20) * angleX;
+        let finalY = this.coord.y + (this.radius + 20) * angleY;
+
+        this.createReloadClip(finalX, finalY, "magenta");
     };
 
     gunMechanic = () => {
@@ -117,6 +128,10 @@ export class Mage extends Hero {
 
         for (let i = 0; i < this.ghostBullets.length; i++) {
             this.createBullet(i);
+        }
+
+        for (let i = 0; i < 3; i++) {
+            this.createUlty(i);
         }
     };
 
@@ -143,7 +158,7 @@ export class Mage extends Hero {
         window.addEventListener("keydown", this.useSpell);
     }
 
-    draw() {
+    draw(obj) {
         super.draw();
 
         if (this.curHp > 0) {
@@ -151,6 +166,7 @@ export class Mage extends Hero {
 
             this.bullets.forEach((bullet) => {
                 bullet.draw();
+                bullet.damage(obj);
                 if (bullet.finish) {
                     this.bullets = this.bullets.filter((item) => !item.finish);
                 }

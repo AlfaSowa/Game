@@ -41,67 +41,67 @@ export class Boss {
         this.createCircle(this.coord.x, this.coord.y, this.radius, this.color);
     };
 
-    createVoid = () => {
-        this.pseudoVoids.push({ coord: { x: this.heroCoord.x, y: this.heroCoord.y }, radius: 50 });
+    // createVoid = () => {
+    //     this.pseudoVoids.push({ coord: { x: this.heroCoord.x, y: this.heroCoord.y }, radius: 50 });
 
-        let voidCoord = {
-            x: this.heroCoord.x,
-            y: this.heroCoord.y,
-        };
+    //     let voidCoord = {
+    //         x: this.heroCoord.x,
+    //         y: this.heroCoord.y,
+    //     };
 
-        this.voids.forEach((item) => {
-            if (item.radius < 100) {
-                item.radius = item.radius + 10;
-            }
-        });
+    //     this.voids.forEach((item) => {
+    //         if (item.radius < 100) {
+    //             item.radius = item.radius + 10;
+    //         }
+    //     });
 
-        setTimeout(() => {
-            this.voids.push({ coord: { x: voidCoord.x, y: voidCoord.y }, radius: 50 });
-        }, 3000);
-    };
+    //     setTimeout(() => {
+    //         this.voids.push({ coord: { x: voidCoord.x, y: voidCoord.y }, radius: 50 });
+    //     }, 3000);
+    // };
 
-    clearVoids = () => {
-        this.voids = [];
-        this.pseudoVoids = [];
-    };
+    // clearVoids = () => {
+    //     this.voids = [];
+    //     this.pseudoVoids = [];
+    // };
 
-    drawVoid = () => {
-        this.pseudoVoids.forEach((item) => {
-            this.createCircle(item.coord.x, item.coord.y, item.radius, "blue");
-        });
+    // drawVoid = () => {
+    //     this.pseudoVoids.forEach((item) => {
+    //         this.createCircle(item.coord.x, item.coord.y, item.radius, "blue");
+    //     });
 
-        this.voids.forEach((item) => {
-            this.createCircle(item.coord.x, item.coord.y, item.radius, "red");
-        });
-    };
+    //     this.voids.forEach((item) => {
+    //         this.createCircle(item.coord.x, item.coord.y, item.radius, "red");
+    //     });
+    // };
 
-    checkVoid = (hero) => {
-        let check = false;
-        for (let i = 0; i < this.voids.length; i++) {
-            this.checkCoord(hero, this.voids[i]) ? (check = true) : null;
-        }
+    // checkVoid = (hero) => {
+    //     let check = false;
+    //     for (let i = 0; i < this.voids.length; i++) {
+    //         this.checkCoord(hero, this.voids[i]) ? (check = true) : null;
+    //     }
 
-        return check;
-    };
+    //     return check;
+    // };
 
-    getSlow = (hero) => {
-        if (this.checkCoord(hero, this) || this.checkVoid(hero)) {
-            hero.slow = true;
-            hero.curHp -= 2;
-        } else {
-            hero.slow = false;
-        }
-    };
+    // getSlow = (hero) => {
+    //     if (this.checkCoord(hero, this) || this.checkVoid(hero)) {
+    //         hero.slow = true;
+    //         hero.curHp -= 2;
+    //     } else {
+    //         hero.slow = false;
+    //     }
+    // };
 
     init = () => {
         //начнется через 15000 после старта
-        setInterval(() => this.createVoid(), 5000);
-        setInterval(() => this.clearVoids(), 25000);
+        // setInterval(() => this.createVoid(), 5000);
+        // setInterval(() => this.clearVoids(), 25000);
     };
 
     draw = (hero) => {
         this.createBoss(hero);
-        this.drawVoid();
-        this.getSlow(hero);
+        // this.drawVoid();
+        // this.getSlow(hero);
     };
 }

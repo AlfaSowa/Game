@@ -83,13 +83,6 @@ export class Hero {
         window.addEventListener("mousedown", this.getTarget);
     }
 
-    testCircle = () => {
-        this.createStrokeCircle(700, 500, 20, this.testCircleColor, 2);
-        if (this.coord.x > 700 - 20 && this.coord.x < 700 + 20 && this.coord.y > 500 - 20 && this.coord.y < 500 + 20) {
-            this.curHp -= 1;
-        }
-    };
-
     isDeath = () => {
         console.log(1);
     };
@@ -106,6 +99,5 @@ export class Hero {
         }
 
         this.getSlow();
-        this.testCircle();
     }
 }

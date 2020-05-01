@@ -10,6 +10,18 @@ export class Bullet {
         this.mouse = { x: mouse.x, y: mouse.y };
     }
 
+    damage = (obj) => {
+        obj.forEach((object) => {
+            let delta = { x: object.coord.x - this.coord.x, y: object.coord.y - this.coord.y };
+            let dist = Math.sqrt(delta.x * delta.x + delta.y * delta.y);
+
+            if (dist < object.radius) {
+                object.color = "green";
+                this.finish = true;
+            }
+        });
+    };
+
     draw = () => {
         this.ctx.fillStyle = "#fff";
         this.ctx.beginPath();

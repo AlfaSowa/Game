@@ -5,13 +5,22 @@
     background: #f1f1f1
     width: 200px
     height: 200px
+
     &--hide
-        transform: translate(calc(-100% + 40px), calc(-100% + 40px))
+        transform: translate(calc(-100% + 35px), calc(-100% + 35px))
+        .options__show
+            display: block
 
     &__show
-        width: 40px
-        height: 40px
+        width: 35px
+        height: 35px
         position: absolute
         bottom: 0
         right: 0
         background: red
+        cursor: pointer
+        display: none
+
+    &__btn
+        display: flex
+        justify-content: center
