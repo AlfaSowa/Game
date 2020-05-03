@@ -53,10 +53,21 @@ export class Map {
         this.createCircle(700, 500, 20, "red");
     };
 
+    checkCoord = (hero, add, radius) => {
+        let delta = { x: hero.coord.x - add.coord.x, y: hero.coord.y - add.coord.y };
+        let dist = Math.sqrt(delta.x * delta.x + delta.y * delta.y);
+        return dist - hero.radius < radius ? true : false;
+    };
+
     draw = () => {
         this.boss.draw(this.mage);
         this.mage.draw(this.gameObjects);
-        this.walls.map((e) => e.draw());
+        this.walls.forEach((wall) => {
+            wall.draw();
+            if (this.checkCoord(this.mage, wall, wall.blastRadius)) {
+                this.mage.curHp -= 0.5;
+            }
+        });
         this.puffs.map((e) => e.draw());
     };
 }
@@ -72,7 +83,19 @@ class Wall {
         this.color = "red";
         //плотность
         this.density = "hight";
+
+        this.blastRadius = this.radius;
     }
+
+    createStrokeCircle = (x, y, radius, color, lineWidth) => {
+        this.ctx.beginPath();
+        this.ctx.strokeStyle = color;
+        this.ctx.lineJoin = "none";
+        this.ctx.lineWidth = lineWidth;
+        this.ctx.arc(x, y, radius, 0, config.TWO_PI);
+        this.ctx.stroke();
+        this.ctx.closePath();
+    };
 
     createCircle = (x, y, radius, color) => {
         this.ctx.fillStyle = color;
@@ -84,6 +107,12 @@ class Wall {
 
     draw() {
         this.createCircle(this.coord.x, this.coord.y, this.radius, this.color);
+        this.createStrokeCircle(this.coord.x, this.coord.y, this.blastRadius, "red", 2);
+        if (this.blastRadius < this.radius * 4) {
+            this.blastRadius += 0.5;
+        } else {
+            this.blastRadius = this.radius;
+        }
     }
 }
 

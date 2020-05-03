@@ -38,7 +38,6 @@ export class Bullet {
                             break;
                     }
                 } else {
-                    console.log(object);
                     if (object.curHp) {
                         object.curHp -= 20;
                     }
