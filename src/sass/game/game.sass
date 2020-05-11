@@ -1,0 +1,49 @@
+.game
+    position: absolute
+    top: 0
+    right: 0
+    bottom: 0
+    left: 0
+    padding: 100px 20px 20px
+
+    &__inner
+        max-width: 700px
+        margin: 0 auto
+        background: #f1f1f1
+
+    &__heroes
+        display: flex
+
+        &-item
+            flex: 1 0 100px
+            max-width: 100px
+            height: 100px
+            display: flex
+            align-items: center
+            justify-content: center
+            border: 1px solid #000000
+            cursor: pointer
+            &:hover
+                background: #71baff
+            
+            &--active
+                background: #71baff
+
+    
+    &__bottom
+        display: flex
+        justify-content: center
+
+    
+
+    &__start
+        &--hide
+            display: none
+
+    &__end
+        &--hide
+            display: none
+
+
+    &--hide
+        display: none
