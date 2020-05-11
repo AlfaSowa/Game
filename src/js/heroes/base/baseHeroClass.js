@@ -1,26 +1,30 @@
 import { RangeAttack } from "./rangeAttack";
 import { MeleeAttack } from "./meleeAttack";
+import { createFillCircle, createStrokeCircle, createCurrentValue } from "../../engine/engine";
 
 export class BaseHeroClass {
-    target = { x: 500, y: 500 };
-    coord = { x: 500, y: 500 };
+    target = { x: innerWidth / 2, y: innerHeight - 200 };
+    coord = { x: innerWidth / 2, y: innerHeight - 200 };
 
-    mass = 1;
-    vel = 7;
-    radius = 50;
-    color = "red";
+    vel = 5;
+    radius = 35;
+    color = "#2e94dc";
     maxHp = 400;
-    curHp = 0;
+    curHp = this.maxHp;
 
     typeAttack = false;
     heroDamage = 5;
 
     attaks = [];
 
-    aoeRangeCheck = false;
-    aoeRadius = 0;
+    keyW = false;
+    keyA = false;
+    keyS = false;
+    keyD = false;
 
-    isUseSpell = false;
+    dashCd = 0;
+    dashDuration = 0;
+    dashToForward = false;
 
     constructor(opt) {
         this.canvas = opt.canvas;
@@ -28,102 +32,161 @@ export class BaseHeroClass {
         this.mouse = opt.mouse;
     }
 
-    //create
-    createCircle(x, y, radius, color) {
-        this.ctx.fillStyle = color;
-        this.ctx.beginPath();
-        this.ctx.arc(x, y, radius, 0, 2 * Math.PI);
-        this.ctx.closePath();
-        this.ctx.fill();
-    }
-
-    createStrokeCircle(x, y, radius) {
-        this.ctx.beginPath();
-        this.ctx.strokeStyle = "#fff";
-        this.ctx.lineJoin = "none";
-        this.ctx.lineWidth = 2;
-        this.ctx.arc(x, y, radius, 0, 2 * Math.PI);
-        this.ctx.stroke();
-        this.ctx.closePath();
-    }
-
-    createCurHp = (x, y, radius) => {
-        this.ctx.beginPath();
-        this.ctx.strokeStyle = "#e4e4e4";
-        this.ctx.lineJoin = "none";
-        this.ctx.lineWidth = 2;
-        this.ctx.arc(x, y, radius, 0, ((2 * Math.PI) / 100) * ((100 / this.maxHp) * this.curHp));
-        this.ctx.stroke();
-        this.ctx.closePath();
-    };
-
     //move
     getTarget = () => {
         this.target = { x: this.mouse.x, y: this.mouse.y };
     };
-    toMouseCoordMove = () => {
-        if (!this.isUseSpell) {
-            if (this.coord.x != this.target.x || this.coord.y != this.target.y) {
-                let delta = { x: this.target.x - this.coord.x, y: this.target.y - this.coord.y };
-                let dist = Math.sqrt(delta.x * delta.x + delta.y * delta.y);
 
-                if (dist <= this.vel) {
-                    this.coord.x = this.target.x;
-                    this.coord.y = this.target.y;
-                } else {
-                    this.coord.x += ((this.vel * delta.x) / dist) * this.mass;
-                    this.coord.y += ((this.vel * delta.y) / dist) * this.mass;
-                }
+    toMouseCoordMove = () => {
+        if (this.coord.x != this.target.x || this.coord.y != this.target.y) {
+            let delta = { x: this.target.x - this.coord.x, y: this.target.y - this.coord.y };
+            let dist = Math.sqrt(delta.x * delta.x + delta.y * delta.y);
+
+            if (dist <= this.vel) {
+                this.coord.x = this.target.x;
+                this.coord.y = this.target.y;
+            } else {
+                this.coord.x += (this.vel * delta.x) / dist;
+                this.coord.y += (this.vel * delta.y) / dist;
             }
         }
     };
 
-    //base attack
-    baseAttack() {
+    dash = () => {
+        if (this.dashCd > 0) {
+            this.dashCd -= 0.1;
+        }
+
+        if (this.dashToForward) {
+            this.dashToForward = false;
+            this.dashDuration = 10;
+            this.vel = 20;
+            this.dashCd = 10;
+        }
+
+        if (this.dashDuration > 0) {
+            this.dashDuration -= 1;
+        }
+        if (this.dashDuration <= 0) {
+            this.vel = 5;
+        }
+    };
+
+    onKeyDown = (e) => {
+        switch (e.keyCode) {
+            case 68: //d
+                this.keyD = true;
+                break;
+            case 83: //s
+                this.keyS = true;
+                break;
+            case 65: //a
+                this.keyA = true;
+                break;
+            case 87: //w
+                this.keyW = true;
+                break;
+            case 32: //space
+                if (this.dashCd <= 0) {
+                    this.dashToForward = true;
+                }
+                break;
+        }
+    };
+
+    onKeyUp = (e) => {
+        switch (e.keyCode) {
+            case 68: //d
+                this.keyD = false;
+                break;
+            case 83: //s
+                this.keyS = false;
+                break;
+            case 65: //a
+                this.keyA = false;
+                break;
+            case 87: //w
+                this.keyW = false;
+                break;
+        }
+    };
+
+    drawStuff = () => {
+        if (
+            this.coord.x >= this.radius &&
+            this.coord.x <= innerWidth - this.radius &&
+            this.coord.y >= this.radius &&
+            this.coord.y <= innerHeight - this.radius
+        ) {
+            if (this.keyD == true) {
+                this.coord.x += this.vel;
+            }
+            if (this.keyS == true) {
+                this.coord.y += this.vel;
+            }
+            if (this.keyA == true) {
+                this.coord.x -= this.vel;
+            }
+            if (this.keyW == true) {
+                this.coord.y -= this.vel;
+            }
+        }
+
+        if (this.coord.x < this.radius + 5) {
+            this.coord.x = this.radius + 5;
+        }
+        if (this.coord.x > innerWidth - (this.radius + 5)) {
+            this.coord.x = innerWidth - (this.radius + 5);
+        }
+        if (this.coord.y < this.radius + 5) {
+            this.coord.y = this.radius + 5;
+        }
+        if (this.coord.y > innerHeight - (this.radius + 5)) {
+            this.coord.y = innerHeight - (this.radius + 5);
+        }
+    };
+
+    //attack
+    baseAttack = () => {
+        this.getTarget();
         if (this.typeAttack == "range") {
             let delta = { x: this.mouse.x - this.coord.x, y: this.mouse.y - this.coord.y };
             let dist = Math.sqrt(delta.x * delta.x + delta.y * delta.y);
 
-            this.attaks.push(new RangeAttack(this.coord, this.mouse, this.ctx, dist * 0.04));
+            this.attaks.push(new RangeAttack(this.coord, this.mouse, dist * 0.04));
         } else if (this.typeAttack == "melee") {
             this.attaks.push(new MeleeAttack(this.coord, this.mouse, this.ctx));
         }
-    }
+    };
 
-    drawAttack = (obj) => {
+    drawAttack = (objects) => {
         this.attaks.forEach((attack) => {
-            attack.draw();
+            attack.draw(objects, this.heroDamage);
 
-            attack.damage(obj, this.heroDamage);
             if (attack.finish) {
                 this.attaks = this.attaks.filter((item) => !item.finish);
             }
         });
     };
 
-    //aoe range
-    aoeRange() {
-        if (this.aoeRangeCheck) {
-            this.createStrokeCircle(this.mouse.x, this.mouse.y, this.aoeRadius);
-        }
-    }
-
+    //base
     init() {
-        window.addEventListener("mousedown", this.getTarget);
-        window.addEventListener("keydown", this.useSpell);
+        window.addEventListener("mousedown", this.baseAttack);
+        window.addEventListener("keydown", this.onKeyDown, false);
+        window.addEventListener("keyup", this.onKeyUp, false);
         this.curHp = this.maxHp;
     }
 
-    draw(obj) {
+    draw(objects) {
         if (this.curHp > 0) {
-            this.toMouseCoordMove();
+            // this.toMouseCoordMove();
+            this.dash();
+            this.drawStuff();
 
-            this.drawAttack(obj);
-            this.aoeRange();
-
-            this.createCircle(this.coord.x, this.coord.y, this.radius, this.color);
-            this.createStrokeCircle(this.coord.x, this.coord.y, this.radius);
-            this.createCurHp(this.coord.x, this.coord.y, this.radius);
+            this.drawAttack(objects);
+            createFillCircle(this.coord.x, this.coord.y, this.radius, this.color);
+            createStrokeCircle(this.coord.x, this.coord.y, this.radius, "rgba(255,255,255,0.1)", 7);
+            createCurrentValue(this.coord.x, this.coord.y, this.radius, this.maxHp, this.curHp, "#fff", 7);
         }
     }
 }
