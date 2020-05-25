@@ -22,6 +22,9 @@ export class BaseBossClass {
         createStrokeCircle(this.coord.x, this.coord.y, this.radius, "rgba(255,255,255,0.1)", 10);
         createCurrentValue(this.coord.x, this.coord.y, this.radius, this.maxHp, this.curHp, "#fff", 10);
 
+        if (this.shield <= 0) {
+            this.shield = false;
+        }
         if (this.shield) {
             createStrokeCircle(this.coord.x, this.coord.y, this.shieldRadius, "rgba(13,154,208,0.1");
             createCurrentValue(this.coord.x, this.coord.y, this.shieldRadius, this.maxShield, this.shield, this.shieldColor, 4);

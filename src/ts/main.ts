@@ -1,5 +1,4 @@
 import { game } from "./game";
-import heroes from "./json/heroes.json";
 
 // let gameOptions = document.querySelector(".game");
 // let gameStart = document.querySelector(".game__start");
@@ -36,4 +35,5 @@ import heroes from "./json/heroes.json";
 
 //test
 // document.querySelector(".game").classList.add("game--hide");
+
 game.init("mage");

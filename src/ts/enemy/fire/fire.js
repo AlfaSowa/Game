@@ -3,14 +3,15 @@ import { VoidZone } from "./spells/voidZone";
 import { createCurrentValue } from "../../engine/engine";
 
 let config = {
-    voidZoneCount: 2000,
+    voidZoneCount: 900,
     voidZoneCountShow: 300,
 };
 
 export class Fire extends BaseBossClass {
-    //лужа 1 типа
     voidZoneCount = config.voidZoneCount;
     voides = [];
+
+    crash = true;
 
     constructor(opt) {
         super(opt);
@@ -42,5 +43,13 @@ export class Fire extends BaseBossClass {
         this.createvoidZone(hero);
 
         this.voides.map((voidZone) => voidZone.draw(this, hero));
+
+        if (this.shield < this.maxShield / 2 && this.crash) {
+            this.voides.forEach((item) => {
+                item.crash = true;
+            });
+
+            this.crash = false;
+        }
     }
 }

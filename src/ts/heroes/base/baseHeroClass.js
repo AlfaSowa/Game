@@ -2,6 +2,8 @@ import { RangeAttack } from "./rangeAttack";
 import { MeleeAttack } from "./meleeAttack";
 import { createFillCircle, createStrokeCircle, createCurrentValue } from "../../engine/engine";
 
+const random = (min, max) => Math.random() * (max - min) + min;
+
 export class BaseHeroClass {
     target = { x: innerWidth / 2, y: innerHeight - 200 };
     coord = { x: innerWidth / 2, y: innerHeight - 200 };
@@ -13,7 +15,7 @@ export class BaseHeroClass {
     curHp = this.maxHp;
 
     typeAttack = false;
-    heroDamage = 5;
+    heroDamage = 0.4;
 
     attaks = [];
 
@@ -25,6 +27,8 @@ export class BaseHeroClass {
     dashCd = 0;
     dashDuration = 0;
     dashToForward = false;
+
+    critСhance = 0;
 
     constructor(opt) {
         this.canvas = opt.canvas;
@@ -146,6 +150,10 @@ export class BaseHeroClass {
         }
     };
 
+    isCrit = () => {
+        return random(0, 100) < this.critСhance ? true : false;
+    };
+
     //attack
     baseAttack = () => {
         this.getTarget();
@@ -153,7 +161,7 @@ export class BaseHeroClass {
             let delta = { x: this.mouse.x - this.coord.x, y: this.mouse.y - this.coord.y };
             let dist = Math.sqrt(delta.x * delta.x + delta.y * delta.y);
 
-            this.attaks.push(new RangeAttack(this.coord, this.mouse, dist * 0.04));
+            this.attaks.push(new RangeAttack(this.coord, this.mouse, dist * 0.04, this.isCrit()));
         } else if (this.typeAttack == "melee") {
             this.attaks.push(new MeleeAttack(this.coord, this.mouse, this.ctx));
         }
@@ -161,7 +169,8 @@ export class BaseHeroClass {
 
     drawAttack = (objects) => {
         this.attaks.forEach((attack) => {
-            attack.draw(objects, this.heroDamage);
+            attack.init();
+            attack.draw(objects, this);
 
             if (attack.finish) {
                 this.attaks = this.attaks.filter((item) => !item.finish);

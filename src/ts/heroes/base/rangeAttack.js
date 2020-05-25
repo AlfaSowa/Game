@@ -15,9 +15,12 @@ export class RangeAttack {
     bubbleLive = 1;
     bubbleFading = random(0.1, 0.02);
 
-    constructor(coord, mouse, spread) {
+    critMulti = 2;
+
+    constructor(coord, mouse, spread, isCrit) {
         this.mouse = { x: mouse.x + random(-spread, spread), y: mouse.y + random(-spread, spread) };
         this.coord = { x: coord.x, y: coord.y };
+        this.isCrit = isCrit;
     }
 
     moveBullet = () => {
@@ -26,14 +29,18 @@ export class RangeAttack {
             let angle = Math.atan2(delta.y, delta.x);
 
             if (this.coord.x > 0 && this.coord.x < innerWidth && this.coord.y > 0 && this.coord.y < innerHeight) {
-                this.coord.x += Math.cos(angle) * this.vel;
-                this.coord.y += Math.sin(angle) * this.vel;
-                this.mouse.x += Math.cos(angle) * this.vel;
-                this.mouse.y += Math.sin(angle) * this.vel;
+                this.drawTaleBullet(angle);
             } else {
                 this.finish = true;
             }
         }
+    };
+
+    drawTaleBullet = (angle) => {
+        this.coord.x += Math.cos(angle) * this.vel;
+        this.coord.y += Math.sin(angle) * this.vel;
+        this.mouse.x += Math.cos(angle) * this.vel;
+        this.mouse.y += Math.sin(angle) * this.vel;
     };
 
     createBubble = () => {
@@ -43,7 +50,11 @@ export class RangeAttack {
         this.coord.x -= Math.cos(angle) * 2;
         this.coord.y -= Math.sin(angle) * 2;
 
-        createFillCircle(this.coord.x, this.coord.y, this.bubbleRadius, `rgba(64, 198, 249, ${this.bubbleLive})`);
+        if (this.isCrit) {
+            createFillCircle(this.coord.x, this.coord.y, this.bubbleRadius, `rgba(195, 5, 5, ${this.bubbleLive})`);
+        } else {
+            createFillCircle(this.coord.x, this.coord.y, this.bubbleRadius, `rgba(64, 198, 249, ${this.bubbleLive})`);
+        }
 
         this.bubbleLive -= this.bubbleFading;
         if (this.bubbleLive <= 0) {
@@ -51,7 +62,18 @@ export class RangeAttack {
         }
     };
 
-    collisionWithObject = (objects, heroDamage) => {
+    crit = (hero) => {
+        if (this.isCrit) {
+            if (hero.curHp < hero.maxHp) {
+                hero.curHp += hero.heroDamage * this.critMulti;
+            }
+            return hero.heroDamage * this.critMulti;
+        } else {
+            return hero.heroDamage;
+        }
+    };
+
+    collisionWithObject = (objects, hero) => {
         objects.forEach((object) => {
             let delta = { x: object.coord.x - this.coord.x, y: object.coord.y - this.coord.y };
             let dist = Math.sqrt(delta.x * delta.x + delta.y * delta.y);
@@ -60,22 +82,28 @@ export class RangeAttack {
                 if (dist <= object.shieldRadius + this.radius) {
                     this.bubble = true;
                     this.objectDamageCoord = { x: object.coord.x, y: object.coord.y };
-                    object.shield -= heroDamage;
+                    object.shield -= this.crit(hero);
                 }
             } else {
                 if (dist < object.radius + this.radius) {
                     this.finish = true;
-                    object.curHp -= heroDamage;
+                    object.curHp -= this.crit(hero);
                 }
             }
         });
     };
 
-    draw = (objects, heroDamage) => {
+    init() {
+        if (this.isCrit) {
+            this.color = "rgba(195, 5, 5, 1)";
+        }
+    }
+
+    draw = (objects, hero) => {
         if (!this.bubble) {
             createFillCircle(this.coord.x, this.coord.y, this.radius, this.color);
             this.moveBullet();
-            this.collisionWithObject(objects, heroDamage);
+            this.collisionWithObject(objects, hero);
         } else {
             this.createBubble();
         }

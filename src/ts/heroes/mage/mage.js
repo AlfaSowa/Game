@@ -3,6 +3,7 @@ import { Blast } from "./spells/blast";
 
 export class Mage extends BaseHeroClass {
     typeAttack = "range";
+    critСhance = 20;
     constructor(opt) {
         super(opt);
     }

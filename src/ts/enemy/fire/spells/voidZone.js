@@ -9,24 +9,24 @@ export class VoidZone {
     radius = config.radius;
     color = "#5400c3";
     finish = false;
-    vel = 1;
+    vel = 1.5;
 
     bubbleHp = 100;
     bubbleRadius = 50;
+    bubbleColor = "#280358";
+
+    crash = false;
 
     constructor(opt) {
         this.coord = { x: opt.coord.x, y: opt.coord.y };
         this.bubbleCoord = { x: opt.coord.x, y: opt.coord.y };
     }
 
-    grow = () => {
+    createZone = (hero) => {
         if (this.radius < config.maxRadius) {
             this.radius += 0.1;
         }
-    };
 
-    createZone = (hero) => {
-        this.grow();
         createFillCircle(this.coord.x, this.coord.y, this.radius, this.color);
 
         let delta = { x: hero.coord.x - this.coord.x, y: hero.coord.y - this.coord.y };
@@ -45,13 +45,13 @@ export class VoidZone {
         this.bubbleCoord.y += (this.vel * delta.y) / dist;
 
         if (dist > boss.radius + this.bubbleRadius) {
-            createFillCircle(this.bubbleCoord.x, this.bubbleCoord.y, this.bubbleRadius, "#280358");
+            createFillCircle(this.bubbleCoord.x, this.bubbleCoord.y, this.bubbleRadius, this.bubbleColor);
         } else {
             if (this.bubbleRadius > 0) {
-                createFillCircle(this.bubbleCoord.x, this.bubbleCoord.y, this.bubbleRadius, "#280358");
-                this.bubbleRadius -= 5;
+                createFillCircle(this.bubbleCoord.x, this.bubbleCoord.y, this.bubbleRadius, this.bubbleColor);
+                this.bubbleRadius -= 1;
                 if (boss.shield <= boss.maxShield) {
-                    boss.shield += 5;
+                    boss.shield += 0.3;
                 }
             } else {
                 this.finish = true;
@@ -62,9 +62,12 @@ export class VoidZone {
         let distHero = Math.sqrt(deltaHero.x * deltaHero.x + deltaHero.y * deltaHero.y);
 
         if (distHero < this.bubbleRadius + hero.radius) {
-            hero.curHp -= 0.1;
-            this.bubbleHp -= 0.2;
-            if (this.bubbleHp <= 0) {
+            hero.curHp -= 0.6;
+            this.bubbleRadius -= 0.1;
+            if (this.bubbleRadius <= 35) {
+                this.bubbleColor = "red";
+            }
+            if (this.bubbleRadius <= 30) {
                 this.finish = true;
             }
         }
@@ -75,6 +78,16 @@ export class VoidZone {
 
         if (!this.finish) {
             this.bubble(boss, hero);
+        }
+
+        if (this.crash) {
+            this.bubbleCoord = { x: this.coord.x, y: this.coord.y };
+            this.bubbleRadius = 50;
+            this.bubbleColor = "#280358";
+            this.vel = 0.6;
+            this.bubbleRadius = 35;
+            this.finish = false;
+            this.crash = false;
         }
     };
 }
