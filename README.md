@@ -1,3 +1,3 @@
 #игра на canvas
 
-https://grimmino.github.io/Game/dist/
+https://alfasowa.github.io/Game/dist/
